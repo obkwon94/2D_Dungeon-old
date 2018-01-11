@@ -8,7 +8,7 @@ public class TileMap : MonoBehaviour
 	
 	void Start ()
     {
-        InitSpriteList();
+
 	}
 	
 	
@@ -20,10 +20,26 @@ public class TileMap : MonoBehaviour
     // Sprite List
     Sprite[] _spriteArray;
 
-    void InitSpriteList()
+    public void Init()
     {
         _spriteArray = Resources.LoadAll<Sprite>("Sprites/MapSprite");
         CreateTiles();
+    }
+
+    // Info
+    public int GetWidth()
+    {
+        return _width;
+    }
+
+    public int GetHeight()
+    {
+        return _height;
+    }
+
+    public TileCell GetTileCell(int x, int y)
+    {
+        return _tileCellList[y, x];
     }
 
     // Tile
@@ -32,7 +48,7 @@ public class TileMap : MonoBehaviour
     int _width;
     int _height;
 
-    List<TileCell> _tileCellList = new List<TileCell>();
+    TileCell[,] _tileCellList;
 
     void CreateTiles()
     {
@@ -46,9 +62,10 @@ public class TileMap : MonoBehaviour
             _width = int.Parse(token[1]);
             _height = int.Parse(token[2]);
         }
+        _tileCellList = new TileCell[_height, _width];
 
         // 1st floor
-        for(int y=0; y<_height; y++)
+        for (int y=0; y<_height; y++)
         {
             int line = y + 2;
             string[] token = records[line].Split(',');
@@ -64,12 +81,19 @@ public class TileMap : MonoBehaviour
 
                 TileObject tileObject = tileGameObject.GetComponent<TileObject>();
                 tileObject.Init(_spriteArray[spriteIndex]);
-                
+
+                /*
                 TileCell tileCell = new TileCell();
                 tileCell.Init();
                 tileCell.SetPosition(x * tileSize / 100.0f, y * tileSize / 100.0f);
                 tileCell.AddObject(eTileLayer.GROUND, tileObject);
                 _tileCellList.Add(tileCell);
+                */
+                _tileCellList[y, x] = new TileCell();
+                GetTileCell(x, y).Init();
+                GetTileCell(x, y).SetPosition(x * tileSize / 100.0f, y * tileSize / 100.0f);
+                GetTileCell(x, y).AddObject(eTileLayer.GROUND, tileObject);
+                
             }
         }
 
@@ -96,26 +120,11 @@ public class TileMap : MonoBehaviour
                     TileObject tileObject = tileGameObject.GetComponent<TileObject>();
                     tileObject.Init(_spriteArray[spriteIndex]);
                     
-                    int cellIndex = (y * _width) + x;
-                    _tileCellList[cellIndex].AddObject(eTileLayer.GROUND, tileObject);
+                   // int cellIndex = (y * _width) + x;
+                    GetTileCell(x, y).AddObject(eTileLayer.GROUND, tileObject);
                 }
             }
         }
-        /*
-        for (int i = 0; i < _spriteArray.Length; i++)
-        {
-            float x = (i % 16) * tileSize / 100.0f;
-            float y = -(i / 16) * tileSize / 100.0f;
-
-            GameObject tileGameObject = GameObject.Instantiate(TileObjectPrefabs);
-            tileGameObject.transform.SetParent(transform);
-            tileGameObject.transform.localScale = Vector3.one;
-            tileGameObject.transform.localPosition = Vector3.zero;
-
-            TileObject tileObject = tileGameObject.GetComponent<TileObject>();
-            tileObject.Init(_spriteArray[i]);
-            tileObject.SetPosition(x, y);
-        }
-        */
+        
     }
 }
