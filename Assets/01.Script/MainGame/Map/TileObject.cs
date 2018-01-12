@@ -22,5 +22,4 @@ public class TileObject : MapObject
     {
         gameObject.GetComponent<SpriteRenderer>().sprite = sprite;
     }
-
 }

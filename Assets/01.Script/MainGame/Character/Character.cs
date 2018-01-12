@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MapObject
+public class Character : MapObject
 {
-    public GameObject _characterView;
+    GameObject _characterView;
 
-	void Start ()
+    void Start ()
     {
-        
+		
 	}
 	
 	void Update ()
@@ -16,8 +16,19 @@ public class Player : MapObject
 		
 	}
 
-    public void Init()
+    public void Init(string viewName)
     {
+        // View를 붙인다
+        //GameObject characterViewPrefabs = Resources.Load<GameObject>("Prefabs/CharacterView/character01");
+        string filePath = "Prefabs/CharacterView/" + viewName;
+
+        GameObject characterViewPrefabs = Resources.Load<GameObject>(filePath);
+        _characterView = GameObject.Instantiate(characterViewPrefabs);
+
+        _characterView.transform.SetParent(transform);
+        _characterView.transform.localPosition = Vector3.zero;
+        _characterView.transform.localScale = Vector3.one;
+
         TileMap map = GameManager.Instance.GetMap();
 
         int x = Random.Range(1, map.GetWidth() - 2);

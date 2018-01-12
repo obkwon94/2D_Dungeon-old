@@ -27,4 +27,10 @@ public class MapObject : MonoBehaviour
         gameObject.GetComponent<SpriteRenderer>().sortingLayerID = sortingID;
         gameObject.GetComponent<SpriteRenderer>().sortingOrder = sortingOrder;
     }
+
+    public void BecomeViewer()
+    {
+        Camera.main.transform.SetParent(transform);
+        Camera.main.transform.localPosition = new Vector3(0.0f, 0.0f, Camera.main.transform.localPosition.z);
+    }
 }
